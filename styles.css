@@ -1,0 +1,436 @@
+/* Base Styles */
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* Login Page Styles */
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100vh;
+    max-height: 100%;
+    z-index: -1;
+}
+
+.login-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    z-index: 999;
+}
+
+.login-container > h2 {
+    text-align: center;
+}
+
+.login-input, .login-dropbox {
+    width: 100%;
+    padding: 10px 0;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-indent: 15px;
+}
+
+.login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #80141c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover {
+    background-color: #c03434;
+}
+
+/* Navigation */
+nav {
+    background-color: #80141c;
+    width: 100%;
+    height: 80px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav > img {
+    padding: 10px;
+    height: 60px;
+}
+
+nav > a > img {
+    height: 40px;
+    padding-right: 20px;
+}
+
+/* Dashboard Styles */
+.dashboard-message {
+    font-size: 64px;
+    margin-bottom: 0;
+}
+
+.dashboard-body {
+    margin: 16px;
+}
+
+.dashboard-courses {
+    list-style-type: none;
+    padding: 0 25px;
+}
+
+.dashboard-courses > a {
+    text-decoration: none;
+    color: black;
+    transition: opacity 0.3s;
+}
+
+.dashboard-courses > a:hover, a:active {
+    opacity: 60%;
+}
+
+.dashboard-course {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 50px 25px;
+    margin-bottom: 20px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left: #80141c solid 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.8);
+}
+
+.course-header {
+    margin-bottom: 30px;
+}
+
+/* Course Page Styles */
+h1, h2, h3, h4 {
+    color: black;
+}
+
+.inline-form {
+    display: inline;
+    margin-left: 10px;
+}
+
+.small-button {
+    padding: 5px 10px;
+    background-color: #80141c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.small-button:hover {
+    background-color: #c03434;
+}
+
+/* Sections */
+.announcements-section,
+.tas-section,
+.appointments-section {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.announcements-section h2,
+.tas-section h2,
+.appointments-section h2 {
+    border-bottom: 2px solid #80141c;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Forms */
+.new-announcement-form {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Lists */
+.announcements-list {
+    margin-top: 20px;
+}
+
+.ta-list,
+.appointments-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.ta-list li,
+.appointments-list li {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f7f7f7;
+    border-left: 3px solid #80141c;
+    border-radius: 4px;
+}
+
+/* Announcements */
+.announcement-card {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.announcement-card:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.announcement-meta {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.announcement-meta .date {
+    margin-left: 15px;
+}
+
+.announcement-content {
+    line-height: 1.6;
+}
+
+/* Extra Button for Page Direction */
+.page-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #80141c;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.page-button:hover {
+    background-color: #c03434;
+}
+
+/* Discussion Styles */
+.post {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.post-content {
+    margin-bottom: 15px;
+}
+
+.reply-form {
+    margin-top: 15px;
+    display: none;
+}
+
+.replies {
+    margin-left: 30px;
+    margin-top: 15px;
+    border-left: 3px solid #ddd;
+    padding-left: 15px;
+}
+
+.reply {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.toggle-replies {
+    color: #80141c;
+    cursor: pointer;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+/* History Modals */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #80141c;
+}
+
+.view-history-btn {
+    margin-top: 15px;
+    padding: 8px 15px;
+    background-color: #80141c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    transition: background-color 0.3s;
+}
+
+.view-history-btn:hover {
+    background-color: #c03434;
+}
+
+.modal-content .appointments-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.modal-content .appointments-list li {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f7f7f7;
+    border-left: 3px solid #80141c;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+        margin: 10% auto;
+    }
+}
+
+/* Feedback Styles */
+.history-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    border-left: 3px solid #80141c;
+}
+
+.appointment-info {
+    margin-bottom: 10px;
+}
+
+.feedback-display {
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+}
+
+.feedback-form-container {
+    margin-top: 10px;
+}
+
+.feedback-form {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.feedback-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 80px;
+    font-family: "Poppins", sans-serif;
+}
+
+.rating-container {
+    margin-bottom: 10px;
+}
+
+.rating-container label {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.toggle-feedback-btn {
+    margin-top: 5px;
+}

@@ -64,6 +64,7 @@ To improve course tutoring efficiency and facilitate scheduling consultation tim
 🔍📁 script.js                     # Frontend JavaScript
 🔍📁 phpinfo.php                   # PHP info page (debugging)
 🔍📁 logout.png, logo_*.png        # Image assets
+🔍📁 LICENSE                       # Project license
 🔍📁 README.md                     # Project documentation
 ```
 

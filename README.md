@@ -117,14 +117,17 @@ $dbname = "ta_reservation_system";
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Authors
 
-**Jayvis Wisely**\
+**Jayvis Wisely 黃健維**\
 [GitHub Profile →](https://github.com/jayviswisely)
+**Gilbert Karlsen Lyon 梁家銓**
+**Louis Shevchenko 黎益福**
+**Marcus Lee Zhan Sheng 李展陞**
 
 ---
 
 ## 📄 License
 
-This project is for educational purposes and is currently not licensed.\
-Feel free to fork or contribute with attribution.
+This project is licensed under the [MIT License](./LICENSE).  
+Feel free to use, modify, and distribute with proper attribution.

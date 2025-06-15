@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 15, 2025 at 10:33 AM
+-- Generation Time: Jun 15, 2025 at 11:55 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,7 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`announcement_id`, `course_id`, `author_id`, `title`, `content`, `created_at`) VALUES
-(2, 1, 14, 'BEIDANG', 'you guys all failed', '2025-06-15 08:21:43');
+(2, 1, 14, 'No classes on 6/16', 'Classes are cancelled on 6/16, have a nice holiday', '2025-06-15 09:44:49');
 
 -- --------------------------------------------------------
 
@@ -61,7 +61,7 @@ CREATE TABLE `announcement_reactions` (
 --
 
 INSERT INTO `announcement_reactions` (`reaction_id`, `announcement_id`, `user_id`) VALUES
-(6, 2, 8);
+(2, 2, 6);
 
 -- --------------------------------------------------------
 
@@ -82,7 +82,8 @@ CREATE TABLE `appointments` (
 INSERT INTO `appointments` (`appointment_id`, `student_id`, `schedule_id`) VALUES
 (1, 6, 1),
 (2, 8, 2),
-(3, 6, 6);
+(3, 6, 6),
+(4, 6, 10);
 
 -- --------------------------------------------------------
 
@@ -99,6 +100,14 @@ CREATE TABLE `appointment_feedback` (
   `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5),
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `appointment_feedback`
+--
+
+INSERT INTO `appointment_feedback` (`feedback_id`, `appointment_id`, `student_id`, `ta_id`, `feedback_text`, `rating`, `created_at`) VALUES
+(1, 3, 6, 12, 'I\'ve learnt a lot from this consultation session, thanks!', 5, '2025-06-15 06:42:38'),
+(2, 1, 6, 10, 'teacher was late', 1, '2025-06-15 06:43:34');
 
 -- --------------------------------------------------------
 
@@ -190,13 +199,9 @@ CREATE TABLE `discussion_posts` (
 --
 
 INSERT INTO `discussion_posts` (`post_id`, `course_id`, `user_id`, `title`, `content`, `created_at`, `parent_id`, `image_path`, `is_pinned`) VALUES
-(1, 1, 10, '老師我會被當嗎', 'jdbhfjkfbwejkfbewjkfbjew', '2025-06-09 14:34:22', NULL, NULL, 0),
-(2, 1, 10, 'Stupid', 'you are TA', '2025-06-09 14:34:40', 1, NULL, 0),
-(3, 1, 10, 'Untitled', 'dsgbsebg', '2025-06-09 14:34:51', 1, NULL, 0),
-(4, 1, 14, 'i will fire you', 'youre fired nigga', '2025-06-09 14:35:41', 1, NULL, 0),
-(5, 1, 14, 'i will fire you', 'youre fired nigga', '2025-06-09 14:36:42', 1, NULL, 0),
-(6, 1, 14, 'Untitled', 'sfbdsfb', '2025-06-09 14:36:52', 1, NULL, 0),
-(7, 1, 8, 'is this the songjiu poster from last year', 'yes or no', '2025-06-15 08:23:04', NULL, NULL, 0);
+(9, 1, 6, 'HELP', 'can anyone pls help me answer this', '2025-06-15 09:49:28', NULL, 'uploads/684e9728a8760.jpg', 0),
+(10, 1, 10, 'Untitled', 'are u stupid?????', '2025-06-15 09:50:07', 9, NULL, 0),
+(11, 1, 10, 'Please do not upload stupid questions', 'DON\'T upload stupid questions like mr.黃健維, thank you', '2025-06-15 09:51:19', NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -245,7 +250,8 @@ INSERT INTO `ta_schedule` (`schedule_id`, `ta_id`, `course_id`, `date`, `time`, 
 (5, 12, 1, '2025-06-13', '09:00:00', 0),
 (6, 12, 1, '2025-06-13', '13:00:00', 1),
 (7, 13, 1, '2025-06-14', '10:00:00', 0),
-(8, 13, 1, '2025-06-15', '14:00:00', 0);
+(8, 13, 1, '2025-06-15', '14:00:00', 0),
+(10, 10, 1, '2025-06-24', '20:30:00', 1);
 
 -- --------------------------------------------------------
 
@@ -423,19 +429,19 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `announcement_reactions`
 --
 ALTER TABLE `announcement_reactions`
-  MODIFY `reaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `reaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `appointment_feedback`
 --
 ALTER TABLE `appointment_feedback`
-  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `courses`
@@ -447,7 +453,7 @@ ALTER TABLE `courses`
 -- AUTO_INCREMENT for table `discussion_posts`
 --
 ALTER TABLE `discussion_posts`
-  MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -459,7 +465,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `ta_schedule`
 --
 ALTER TABLE `ta_schedule`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`

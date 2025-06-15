@@ -61,12 +61,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['new_announcement']) &&
     <title><?= htmlspecialchars($course['course_name']) ?> - <?= htmlspecialchars($course['course_code']) ?></title>
     <link rel="stylesheet" href="./styles.css">
     <link rel="shortcut icon" href="logo_red.png" type="image/x-icon">
+    <style>
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #80141c;
+            padding: 0 10px;
+        }
+        .delete-button:hover {
+            color: #c03434;
+        }
+        .announcement-reactions {
+            margin-top: 10px;
+        }
+        .reaction-button {
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .reaction-button:hover {
+            background-color: #f0f0f0;
+        }
+        .reaction-button.reacted {
+            background-color: #e3f2fd;
+            border-color: #bbdefb;
+        }
+        .reaction-count {
+            margin-left: 5px;
+        }
+    </style>
     <script>
         function showAppointmentHistory() {
             const modal = document.getElementById('historyModal');
             modal.style.display = 'block';
             
-            // Load history via AJAX
             fetch('get_history.php?course_id=<?= $course_id ?>')
                 .then(response => response.text())
                 .then(data => {
@@ -83,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['new_announcement']) &&
             document.getElementById('historyModal').style.display = 'none';
         }
         
-        // Close modal when clicking outside content
         window.onclick = function(event) {
             const modal = document.getElementById('historyModal');
             if (event.target == modal) {
@@ -118,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['new_announcement']) &&
             })
             .then(message => {
                 alert(message);
-                showAppointmentHistory(); // Refresh the history view
+                showAppointmentHistory();
             })
             .catch(error => {
                 alert('Error submitting feedback: ' + error.message);
@@ -158,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['new_announcement']) &&
             <div class="announcements-list">
                 <?php
                 $ann_stmt = $conn->prepare("
-                    SELECT a.title, a.content, a.created_at, u.full_name AS author
+                    SELECT a.announcement_id, a.title, a.content, a.created_at, u.full_name AS author
                     FROM announcements a
                     JOIN users u ON a.author_id = u.user_id
                     WHERE a.course_id = ?
@@ -171,13 +208,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['new_announcement']) &&
                 if ($ann_result->num_rows > 0):
                     while ($a = $ann_result->fetch_assoc()): ?>
                     <div class="announcement-card">
-                        <h4><?= htmlspecialchars($a['title']) ?></h4>
+                        <div class="announcement-header">
+                            <h4><?= htmlspecialchars($a['title']) ?></h4>
+                            <?php if ($role === 'admin'): ?>
+                                <form method="POST" action="delete_announcement.php" class="delete-announcement-form">
+                                    <input type="hidden" name="announcement_id" value="<?= $a['announcement_id'] ?>">
+                                    <input type="hidden" name="course_id" value="<?= $course_id ?>">
+                                    <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this announcement?')">×</button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
                         <div class="announcement-meta">
                             <span class="author">Posted by <?= htmlspecialchars($a['author']) ?></span>
                             <span class="date">on <?= date('M j, Y g:i A', strtotime($a['created_at'])) ?></span>
                         </div>
                         <div class="announcement-content">
                             <p><?= nl2br(htmlspecialchars($a['content'])) ?></p>
+                        </div>
+                        <div class="announcement-reactions">
+                            <?php
+                            $reacted = false;
+                            if (isset($_SESSION['user_id']) && $role === 'student') {
+                                $react_stmt = $conn->prepare("SELECT 1 FROM announcement_reactions WHERE announcement_id = ? AND user_id = ?");
+                                $react_stmt->bind_param("ii", $a['announcement_id'], $_SESSION['user_id']);
+                                $react_stmt->execute();
+                                $reacted = $react_stmt->get_result()->num_rows > 0;
+                            }
+                            
+                            $count_stmt = $conn->prepare("SELECT COUNT(*) as count FROM announcement_reactions WHERE announcement_id = ?");
+                            $count_stmt->bind_param("i", $a['announcement_id']);
+                            $count_stmt->execute();
+                            $count = $count_stmt->get_result()->fetch_assoc()['count'];
+                            ?>
+                            <form method="POST" action="toggle_reaction.php" class="reaction-form">
+                                <input type="hidden" name="announcement_id" value="<?= $a['announcement_id'] ?>">
+                                <input type="hidden" name="course_id" value="<?= $course_id ?>">
+                                <button type="submit" class="reaction-button <?= $reacted ? 'reacted' : '' ?>" <?= $role !== 'student' ? 'disabled' : '' ?>>
+                                    👍 <span class="reaction-count"><?= $count ?></span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                     <?php endwhile; else: ?>

@@ -46,17 +46,20 @@ To improve course tutoring efficiency and facilitate scheduling consultation tim
 ```
 /
 🔍📁 index.php                      # Login page
-🔍📁 course.php                    # Main course view for students
+🔍📁 login.php                     # Login handling
+🔍📁 course.php                    # Main course view
 🔍📁 ta.php                        # TA dashboard
 🔍📁 student.php                   # Student dashboard
 🔍📁 admin.php                     # Admin dashboard
+🔍📁 delete_announcement.php       # Announcement deletion handling
+🔍📁 toggle_reaction.php           # Announcement reaction handling
 🔍📁 make_appointment.php          # Appointment booking
 🔍📁 manage_schedule.php           # TA schedule management
 🔍📁 get_history.php               # Appointment history fetcher
 🔍📁 discussion.php                # Course Q&A section
 🔍📁 submit_feedback.php           # Handles student feedback
 🔍📁 db_connect.php                # Database connection config
-🔍📁 ta_reservation_system_vFeedbackUpdate.sql  # SQL schema
+🔍📁 ta_reservation_system.sql     # SQL schema
 🔍📁 styles.css                    # CSS styles
 🔍📁 script.js                     # Frontend JavaScript
 🔍📁 phpinfo.php                   # PHP info page (debugging)

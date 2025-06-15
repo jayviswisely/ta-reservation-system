@@ -30,11 +30,36 @@ if ($course_result->num_rows === 0) {
 
 $course = $course_result->fetch_assoc();
 
+// Check if user is TA
+$is_ta = false;
+if (isset($_SESSION['user_id'])) {
+    $ta_check = $conn->prepare("SELECT 1 FROM course_tas WHERE course_id = ? AND ta_id = ?");
+    $ta_check->bind_param("ii", $course_id, $_SESSION['user_id']);
+    $ta_check->execute();
+    $is_ta = $ta_check->get_result()->num_rows > 0;
+}
+
 // Handle form submission for new posts
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['content'])) {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content']);
     $parent_id = isset($_POST['parent_id']) ? intval($_POST['parent_id']) : null;
+    $image_path = null;
+    
+    if (!empty($_FILES['image']['name'])) {
+        $target_dir = "uploads/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        
+        $file_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+        $filename = uniqid() . '.' . $file_ext;
+        $target_file = $target_dir . $filename;
+        
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+            $image_path = $target_file;
+        }
+    }
     
     if (!empty($content)) {
         // Set default title if empty
@@ -42,19 +67,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['content'])) {
             $title = "Untitled";
         }
         
-        $insert_sql = "INSERT INTO discussion_posts (course_id, user_id, title, content, parent_id) VALUES (?, ?, ?, ?, ?)";
+        $insert_sql = "INSERT INTO discussion_posts (course_id, user_id, title, content, parent_id, image_path) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($insert_sql);
-        $stmt->bind_param("iissi", $course_id, $_SESSION['user_id'], $title, $content, $parent_id);
+        $stmt->bind_param("iissis", $course_id, $_SESSION['user_id'], $title, $content, $parent_id, $image_path);
         $stmt->execute();
     }
 }
 
-// Get all discussion posts for this course (top-level only)
+// Handle pin/unpin
+if (isset($_GET['pin'])) {
+    $post_id = intval($_GET['pin']);
+    if ($is_ta) {
+        $conn->query("UPDATE discussion_posts SET is_pinned = NOT is_pinned WHERE post_id = $post_id");
+    }
+    header("Location: discussion.php?course_id=$course_id");
+    exit();
+}
+
+// Get all discussion posts for this course (pinned first)
 $posts_sql = "SELECT dp.*, u.full_name 
               FROM discussion_posts dp
               JOIN users u ON dp.user_id = u.user_id
               WHERE dp.course_id = ? AND dp.parent_id IS NULL
-              ORDER BY dp.created_at DESC";
+              ORDER BY dp.is_pinned DESC, dp.created_at DESC";
 $stmt = $conn->prepare($posts_sql);
 $stmt->bind_param("i", $course_id);
 $stmt->execute();
@@ -71,46 +106,41 @@ $posts_result = $stmt->get_result();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <!-- <style>
-        .post {
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    <style>
+        .post-image {
+            margin: 15px 0;
+            max-width: 100%;
         }
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-weight: bold;
+        .post-image img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 4px;
         }
-        .post-content {
-            margin-bottom: 15px;
-        }
-        .reply-form {
-            margin-top: 15px;
-            display: none;
-        }
-        .replies {
-            margin-left: 30px;
-            margin-top: 15px;
-            border-left: 3px solid #ddd;
-            padding-left: 15px;
-        }
-        .reply {
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .toggle-replies {
-            color: #0066cc;
-            cursor: pointer;
-            margin-top: 10px;
+        .pin-form {
             display: inline-block;
+            margin-left: 10px;
         }
-    </style> -->
+        .pin-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #80141c;
+            font-size: 14px;
+        }
+        .pin-button:hover {
+            color: #c03434;
+        }
+        .pinned-badge {
+            display: inline-block;
+            background-color: #fff3e0;
+            color: #e65100;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+            border: 1px solid #ffe0b2;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -126,7 +156,7 @@ $posts_result = $stmt->get_result();
         <!-- New Post Form -->
         <div class="post">
             <h3>Ask a New Question</h3>
-            <form method="POST" action="discussion.php?course_id=<?php echo $course_id; ?>">
+            <form method="POST" action="discussion.php?course_id=<?php echo $course_id; ?>" enctype="multipart/form-data">
                 <div>
                     <label for="title">Title:</label>
                     <input type="text" id="title" name="title" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
@@ -135,17 +165,25 @@ $posts_result = $stmt->get_result();
                     <label for="content">Question:</label>
                     <textarea id="content" name="content" required style="width: 100%; padding: 8px; min-height: 100px;"></textarea>
                 </div>
+                <div>
+                    <label for="image">Upload Image (optional):</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
                 <button type="submit" style="margin-top: 10px;">Post Question</button>
             </form>
         </div>
         
         <!-- List of Posts -->
-        <h3>Recent Questions</h3>
+        <h3>Questions</h3>
         <?php if ($posts_result->num_rows > 0): ?>
             <?php while ($post = $posts_result->fetch_assoc()): ?>
                 <div class="post" id="post-<?php echo $post['post_id']; ?>">
                     <div class="post-header">
-                        <span><?php echo htmlspecialchars($post['full_name']); ?></span>
+                        <span><?php echo htmlspecialchars($post['full_name']); ?>
+                            <?php if ($post['is_pinned']): ?>
+                                <span class="pinned-badge">📌 Pinned Question</span>
+                            <?php endif; ?>
+                        </span>
                         <span><?php echo date('M j, Y g:i a', strtotime($post['created_at'])); ?></span>
                     </div>
                     <h3><?php echo htmlspecialchars($post['title']); ?></h3>
@@ -153,14 +191,29 @@ $posts_result = $stmt->get_result();
                         <?php echo nl2br(htmlspecialchars($post['content'])); ?>
                     </div>
                     
+                    <?php if (!empty($post['image_path'])): ?>
+                        <div class="post-image">
+                            <img src="<?php echo htmlspecialchars($post['image_path']); ?>" alt="Post image">
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($is_ta): ?>
+                        <form method="GET" class="pin-form">
+                            <input type="hidden" name="course_id" value="<?php echo $course_id; ?>">
+                            <input type="hidden" name="pin" value="<?php echo $post['post_id']; ?>">
+                            <button type="submit" class="pin-button">
+                                <?php echo $post['is_pinned'] ? '📌 Unpin' : '📌 Pin'; ?>
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                    
                     <!-- Reply button -->
                     <button onclick="toggleReplyForm(<?php echo $post['post_id']; ?>)" class="reply-btn">Reply</button>
                     
                     <!-- Reply form (hidden by default) -->
                     <div class="reply-form" id="reply-form-<?php echo $post['post_id']; ?>">
-                        <form method="POST" action="discussion.php?course_id=<?php echo $course_id; ?>">
+                        <form method="POST" action="discussion.php?course_id=<?php echo $course_id; ?>" enctype="multipart/form-data">
                             <input type="hidden" name="parent_id" value="<?php echo $post['post_id']; ?>">
-                            <!-- Edited optional -->
                             <div>
                                 <label for="title-<?php echo $post['post_id']; ?>">Title (optional):</label>
                                 <input type="text" id="title-<?php echo $post['post_id']; ?>" name="title" placeholder="Leave blank for 'Untitled'" style="width: 100%; padding: 8px; margin-bottom: 10px;">
@@ -168,6 +221,10 @@ $posts_result = $stmt->get_result();
                             <div>
                                 <label for="content-<?php echo $post['post_id']; ?>">Your Answer:</label>
                                 <textarea id="content-<?php echo $post['post_id']; ?>" name="content" required style="width: 100%; padding: 8px; min-height: 80px;"></textarea>
+                            </div>
+                            <div>
+                                <label for="image-<?php echo $post['post_id']; ?>">Upload Image (optional):</label>
+                                <input type="file" id="image-<?php echo $post['post_id']; ?>" name="image" accept="image/*">
                             </div>
                             <button type="submit" style="margin-top: 10px;">Post Reply</button>
                         </form>
@@ -215,6 +272,11 @@ $posts_result = $stmt->get_result();
                                     <div class="post-content">
                                         <?php echo nl2br(htmlspecialchars($reply['content'])); ?>
                                     </div>
+                                    <?php if (!empty($reply['image_path'])): ?>
+                                        <div class="post-image">
+                                            <img src="<?php echo htmlspecialchars($reply['image_path']); ?>" alt="Reply image">
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             <?php endwhile; ?>
                         </div>
@@ -228,7 +290,6 @@ $posts_result = $stmt->get_result();
         <div style="margin-top: 30px;">
             <a href="course.php?course_id=<?php echo $course_id; ?>" class="page-button">← Back to Course</a>
         </div>
-        
         
     </div>
 

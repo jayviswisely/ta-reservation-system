@@ -1,94 +1,127 @@
-📘 Teaching Assistant Consultation Reservation System
+# 📘 Teaching Assistant Consultation Reservation System
 To improve course tutoring efficiency and facilitate scheduling consultation times between students and teaching assistants, a full-stack PHP + MySQL web application is established. Built as a university project for the course Database Management to demonstrate database-driven system design and user interaction flow.
 
-🔧 Features
-- 🧑‍🎓 Student Interface
-    • View personal course list and corresponding TA information
-    • Check available consultation time slots
-    • Reserve consultation time slots
-    • Upload assignments or questions for discussion
-    • Complete consultation feedback
+---
 
-- 👨‍🏫 TA Interface
-    • Set personal consultation time slots
-    • Manage reservation status
-    • View questions submitted by students
-    • Record consultation content and time
-    • Mark frequently asked questions
-    • View student feedback
+## 🔧 Features
 
-- 🧑‍💼 Admin Interface
-    • Manage course TA information
-    • Monitor consultation status
-    • View consultation statistical reports
-    • Publish relevant announcements
+### 🧑‍🎓 Student Interface
+
+- View personal course list and corresponding TA information
+- Check available consultation time slots
+- Reserve consultation time slots
+- Upload assignments or questions for discussion
+- Complete consultation feedback
+
+### 👨‍🏫 TA Interface
+
+- Set personal consultation time slots
+- Manage reservation status
+- View questions submitted by students
+- Record consultation content and time
+- Mark frequently asked questions
+- View student feedback
+
+### 🧑‍💼 Admin Interface
+- Manage course TA information
+- Monitor consultation status
+- View consultation statistical reports
+- Publish relevant announcements
+
+### 🛡️ Authentication
+- Secure Login/logout for students, TAs, and admins
+- Session-based access control
+
+## 🧱 Tech Stack
+- **Frontend**: HTML, CSS, JavaScript
+- **Backend**: PHP
+- **Database**: MySQL (SQL schema provided)
+- **Other**: PHP sessions for authentication and procedures
 
 
-- 🛡️ Authentication
-    • Login/logout for students, TAs, and admins
-    • Session-based access control
+---
 
-🧱 Tech Stack
-Frontend: HTML, CSS, JavaScript
-Backend: PHP
-Database: MySQL (SQL script provided)
-Others: Sessions for auth, PHP procedural code
+## 📁 Project Structure
 
-📁 Project Structure
+```
 /
-├── index.php               # Login page
-├── course.php              # Main course page
-├── ta.php                  # TA dashboard
-├── student.php             # Student dashboard
-├── admin.php               # Admin dashboard
-├── make_appointment.php    # Appointment booking
-├── manage_schedule.php     # TA schedule management
-├── get_history.php         # Fetch appointment history
-├── discussion.php          # Course QNA section
-├── submit_feedback.php     # Handle feedback submissions
-├── db_connect.php          # DB connection config
-├── ta_reservation_system_vFeedbackUpdate.sql # Database schema
-├── styles.css              # Site-wide styling
-├── script.js               # Client-side frontend logic
-├── phpinfo.php             # For environment debugging
-├── logout.png, logo_*.png  # UI assets
-├── README.md               # This file
-└── ...
+🔍📁 index.php                      # Login page
+🔍📁 course.php                    # Main course view for students
+🔍📁 ta.php                        # TA dashboard
+🔍📁 student.php                   # Student dashboard
+🔍📁 admin.php                     # Admin dashboard
+🔍📁 make_appointment.php          # Appointment booking
+🔍📁 manage_schedule.php           # TA schedule management
+🔍📁 get_history.php               # Appointment history fetcher
+🔍📁 discussion.php                # Course Q&A section
+🔍📁 submit_feedback.php           # Handles student feedback
+🔍📁 db_connect.php                # Database connection config
+🔍📁 ta_reservation_system_vFeedbackUpdate.sql  # SQL schema
+🔍📁 styles.css                    # CSS styles
+🔍📁 script.js                     # Frontend JavaScript
+🔍📁 phpinfo.php                   # PHP info page (debugging)
+🔍📁 logout.png, logo_*.png        # Image assets
+🔍📁 README.md                     # Project documentation
+```
 
-🛠️ Setup Instructions
-Clone the repo:
+---
+
+## 🛠️ Setup Instructions
+
+### 1. Clone the repository
+
+```bash
 git clone https://github.com/jayviswisely/ta-reservation-system.git
 cd ta-reservation-system
+```
 
-Set up the database:
-Create a MySQL database (in our files, we use the name ta_reservation_system or you can change it)
+### 2. Set up the MySQL database
 
-Import the provided SQL script:
+- Create a new MySQL database (e.g., `ta_reservation_system`)
+- Import the provided SQL file:
+
+```sql
 SOURCE ta_reservation_system_vFeedbackUpdate.sql;
+```
 
-Configure db_connect.php:
+### 3. Configure database connection
+
+Edit `db_connect.php`:
+
+```php
 $host = "localhost";
 $user = "your_db_user";
 $password = "your_db_password";
-$dbname = "ta_system";
+$dbname = "ta_reservation_system";
+```
 
-Run locally:
-Use XAMPP or similar local server
-Place the project folder inside the htdocs/ directory
-Navigate to http://localhost/ta-reservation-system/index.php
+### 4. Run the project locally
 
-🚀 Future Improvements
-NCKU Moodle Integration for accounts
-Role-based access enhancement
-Mobile responsiveness
-Email notifications for appointment reminders
-Admin dashboard analytics
+- Use [XAMPP](https://www.apachefriends.org/) or any LAMP/WAMP stack
+- Place the project folder inside the `htdocs/` directory
+- Access the system via browser:\
+  `http://localhost/ta-reservation-system/index.php`
 
-👨‍💻 Author
-Jayvis Wisely
-[GitHub](https://github.com/jayviswisely)
+---
 
-📄 License
-This project is for educational purposes and does not currently include a license. Feel free to fork or contribute with attribution.
+## 🚀 Future Improvements
 
+- NCKU Moodle integration for account sync
+- Enhanced role-based access control
+- Responsive mobile design
+- Email notifications for upcoming consultations
+- Admin analytics dashboard
 
+---
+
+## 👨‍💻 Author
+
+**Jayvis Wisely**\
+[GitHub Profile →](https://github.com/jayviswisely)
+
+---
+
+## 📄 License
+
+This project is for educational purposes and is currently not licensed.\
+Feel free to fork or contribute with attribution.

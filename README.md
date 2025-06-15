@@ -84,7 +84,7 @@ cd ta-reservation-system
 - Import the provided SQL file:
 
 ```sql
-SOURCE ta_reservation_system_vFeedbackUpdate.sql;
+SOURCE ta_reservation_system.sql;
 ```
 
 ### 3. Configure database connection

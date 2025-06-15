@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 15, 2025 at 02:39 PM
+-- Generation Time: Jun 15, 2025 at 11:55 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -190,7 +190,7 @@ CREATE TABLE `discussion_posts` (
   `content` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `parent_id` int(11) DEFAULT NULL COMMENT 'For replies, NULL for original posts',
-  `file_path` varchar(255) DEFAULT NULL,
+  `image_path` varchar(255) DEFAULT NULL,
   `is_pinned` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -198,7 +198,7 @@ CREATE TABLE `discussion_posts` (
 -- Dumping data for table `discussion_posts`
 --
 
-INSERT INTO `discussion_posts` (`post_id`, `course_id`, `user_id`, `title`, `content`, `created_at`, `parent_id`, `file_path`, `is_pinned`) VALUES
+INSERT INTO `discussion_posts` (`post_id`, `course_id`, `user_id`, `title`, `content`, `created_at`, `parent_id`, `image_path`, `is_pinned`) VALUES
 (9, 1, 6, 'HELP', 'can anyone pls help me answer this', '2025-06-15 09:49:28', NULL, 'uploads/684e9728a8760.jpg', 0),
 (10, 1, 10, 'Untitled', 'are u stupid?????', '2025-06-15 09:50:07', 9, NULL, 0),
 (11, 1, 10, 'Please do not upload stupid questions', 'DON\'T upload stupid questions like mr.黃健維, thank you', '2025-06-15 09:51:19', NULL, NULL, 1);

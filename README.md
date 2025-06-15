@@ -120,7 +120,7 @@ $dbname = "ta_reservation_system";
 ## 👨‍💻 Authors
 
 **Jayvis Wisely 黃健維**
-[GitHub Profile →](https://github.com/jayviswisely)\
+[GitHub](https://github.com/jayviswisely)\
 **Gilbert Karlsen Lyon 梁家銓**\
 **Louis Shevchenko 黎益福**\
 **Marcus Lee Zhan Sheng 李展陞**

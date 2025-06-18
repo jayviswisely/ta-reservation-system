@@ -70,9 +70,9 @@ $schedule_result = $stmt->get_result();
 </head>
 <body>
     <nav>
-        <img src="./logo_white.png">
+        <img src="./assets/logo_white.png">
         <a href="./index.php">
-            <img src="./logout.png">
+            <img src="./assets/logout.png">
         </a>
     </nav>
 

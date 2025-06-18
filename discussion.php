@@ -187,13 +187,20 @@ if (isset($_GET['pin'])) {
 }
 
 // Get all discussion posts for this course (pinned first)
-$posts_sql = "SELECT dp.*, u.full_name 
+$posts_sql = "SELECT dp.*, u.full_name, 
+              MAX(CASE WHEN r.role_name = 'admin' THEN 1 ELSE 0 END) as is_admin,
+              MAX(CASE WHEN r.role_name = 'ta' THEN 1 ELSE 0 END) as is_ta_general,
+              MAX(CASE WHEN ct.ta_id IS NOT NULL THEN 1 ELSE 0 END) as is_ta_for_course
               FROM discussion_posts dp
               JOIN users u ON dp.user_id = u.user_id
+              LEFT JOIN user_roles ur ON u.user_id = ur.user_id
+              LEFT JOIN roles r ON ur.role_id = r.role_id
+              LEFT JOIN course_tas ct ON u.user_id = ct.ta_id AND ct.course_id = ?
               WHERE dp.course_id = ? AND dp.parent_id IS NULL
+              GROUP BY dp.post_id, u.user_id
               ORDER BY dp.is_pinned DESC, dp.created_at DESC";
 $stmt = $conn->prepare($posts_sql);
-$stmt->bind_param("i", $course_id);
+$stmt->bind_param("ii", $course_id, $course_id);
 $stmt->execute();
 $posts_result = $stmt->get_result();
 ?>
@@ -312,6 +319,35 @@ $posts_result = $stmt->get_result();
             margin-bottom: 20px;
             border: 1px solid #ef9a9a;
         }
+
+        .user-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .ta-badge {
+            background-color: #80141c;
+            color: white;
+        }
+
+        .admin-badge {
+            background-color: #2c387e;
+            color: white;
+        }
+
+        .pinned-badge {
+            background-color: #f5a623;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -357,13 +393,20 @@ $posts_result = $stmt->get_result();
             <?php while ($post = $posts_result->fetch_assoc()): ?>
                 <div class="post" id="post-<?php echo $post['post_id']; ?>">
                     <div class="post-header">
-                        <span><?php echo htmlspecialchars($post['full_name']); ?>
+                        <span>
+                            <?php echo htmlspecialchars($post['full_name']); ?>
+                            <?php if ($post['is_admin']): ?>
+                                <span class="user-badge admin-badge">Professor</span>
+                            <?php elseif ($post['is_ta_for_course'] || $post['is_ta_general']): ?>
+                                <span class="user-badge ta-badge">TA</span>
+                            <?php endif; ?>
                             <?php if ($post['is_pinned']): ?>
                                 <span class="pinned-badge">📌 Pinned Question</span>
                             <?php endif; ?>
                         </span>
                         <span><?php echo date('M j, Y g:i a', strtotime($post['created_at'])); ?></span>
                     </div>
+
                     <h3><?php echo htmlspecialchars($post['title']); ?></h3>
                     <div class="post-content">
                         <?php echo nl2br(htmlspecialchars($post['content'])); ?>
@@ -454,13 +497,20 @@ $posts_result = $stmt->get_result();
                         
                         <div class="replies" id="replies-<?php echo $post['post_id']; ?>" style="display: none;">
                             <?php
-                            $replies_sql = "SELECT dp.*, u.full_name 
-                                           FROM discussion_posts dp
-                                           JOIN users u ON dp.user_id = u.user_id
-                                           WHERE dp.parent_id = ?
-                                           ORDER BY dp.created_at ASC";
+                            $replies_sql = "SELECT dp.*, u.full_name,
+                                        MAX(CASE WHEN r.role_name = 'admin' THEN 1 ELSE 0 END) as is_admin,
+                                        MAX(CASE WHEN r.role_name = 'ta' THEN 1 ELSE 0 END) as is_ta_general,
+                                        MAX(CASE WHEN ct.ta_id IS NOT NULL THEN 1 ELSE 0 END) as is_ta_for_course
+                                        FROM discussion_posts dp
+                                        JOIN users u ON dp.user_id = u.user_id
+                                        LEFT JOIN user_roles ur ON u.user_id = ur.user_id
+                                        LEFT JOIN roles r ON ur.role_id = r.role_id
+                                        LEFT JOIN course_tas ct ON u.user_id = ct.ta_id AND ct.course_id = ?
+                                        WHERE dp.parent_id = ?
+                                        GROUP BY dp.post_id, u.user_id
+                                        ORDER BY dp.created_at ASC";
                             $stmt = $conn->prepare($replies_sql);
-                            $stmt->bind_param("i", $post['post_id']);
+                            $stmt->bind_param("ii", $course_id, $post['post_id']);
                             $stmt->execute();
                             $replies_result = $stmt->get_result();
                             
@@ -468,7 +518,14 @@ $posts_result = $stmt->get_result();
                             ?>
                                 <div class="reply">
                                     <div class="post-header">
-                                        <span><?php echo htmlspecialchars($reply['full_name']); ?></span>
+                                        <span>
+                                            <?php echo htmlspecialchars($reply['full_name']); ?>
+                                            <?php if ($reply['is_admin']): ?>
+                                                <span class="user-badge admin-badge">Professor</span>
+                                            <?php elseif ($reply['is_ta_for_course'] || $reply['is_ta_general']): ?>
+                                                <span class="user-badge ta-badge">TA</span>
+                                            <?php endif; ?>
+                                        </span>
                                         <span><?php echo date('M j, Y g:i a', strtotime($reply['created_at'])); ?></span>
                                     </div>
                                     <?php if (!empty($reply['title'])): ?>
